@@ -11,7 +11,7 @@ public class User {
     private String password;
     private String nickname;
     private String email;
-    private String userPic;
+    private String userPic;//当实体类属性名与表字段不一致时，查询不会报错，只会对找不到对应字段的属性设为null
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 }
