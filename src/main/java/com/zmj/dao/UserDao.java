@@ -4,6 +4,7 @@ import com.zmj.domain.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserDao {
@@ -14,4 +15,7 @@ public interface UserDao {
             "values (#{username},#{password},now(),now())")
     //密码已加密
     void insert(String username, String password);
+
+    @Update("update user set nickname=#{nickname},email=#{email},update_time= now() where id=#{id}")
+    void update(User user);
 }

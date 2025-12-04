@@ -64,4 +64,11 @@ public class UserController {
         User user=userService.findByUsername(username);
         return Result.success(user);
     }
+
+    //必须在此实体参数前加@Validated注解，有关User属性的校验才会启动,就算在Controller类上已添加过也需要再加(已测试)
+    @PutMapping
+    public Result update(@RequestBody @Validated User user){
+        userService.update(user);
+        return Result.success();
+    }
 }

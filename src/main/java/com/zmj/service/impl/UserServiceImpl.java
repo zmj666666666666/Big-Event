@@ -24,4 +24,9 @@ public class UserServiceImpl implements UserService {
         userDao.insert(username,md5String);
         return true;
     }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
+    }
 }
