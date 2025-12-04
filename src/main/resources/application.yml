@@ -7,3 +7,8 @@ spring:
 
 server:
   port: 80
+
+#开启数据库字段的下划线命名和实体类属性驼峰命名的自动转换
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

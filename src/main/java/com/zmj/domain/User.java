@@ -1,5 +1,6 @@
 package com.zmj.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 public class User {
     private Integer id;
     private String username;
+    @JsonIgnore//让springmvc把当前对象转换成json字符串时，忽略该字段(password)
     private String password;
     private String nickname;
     private String email;

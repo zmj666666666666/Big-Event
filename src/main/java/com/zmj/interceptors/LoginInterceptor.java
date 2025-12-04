@@ -2,6 +2,7 @@ package com.zmj.interceptors;
 
 import com.zmj.domain.Result;
 import com.zmj.utils.JwtUtil;
+import com.zmj.utils.ThreadLocalUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,8 @@ public class LoginInterceptor implements HandlerInterceptor {
         String token=request.getHeader("Authorization");
         try {
             Map<String, Object> claims = JwtUtil.parseToken(token);
+            //把业务数据存到TreadLocal中
+            ThreadLocalUtil.set(claims);
         }catch (Exception e){
             //http响应状态码为401
             response.setStatus(401);
@@ -24,5 +27,11 @@ public class LoginInterceptor implements HandlerInterceptor {
         }
         //JWT认证成功，放行
         return true;
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        //清空TreadLocal里的数据
+        ThreadLocalUtil.remove();
     }
 }

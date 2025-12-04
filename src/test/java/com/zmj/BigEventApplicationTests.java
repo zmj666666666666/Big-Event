@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.swing.plaf.TableHeaderUI;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,5 +42,25 @@ class BigEventApplicationTests {
 		System.out.println(claims.get("user"));
 	}
 
+	@Test
+	public void testThreadLocalSetAndGet(){
+		//提供一个ThreadLocal对象
+		ThreadLocal tl=new ThreadLocal();
+
+		//开启两个线程
+		new Thread(() -> {
+			tl.set("zmj");
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+		},"蓝色").start();
+
+		new Thread(() -> {
+			tl.set("hml");
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+			System.out.println(Thread.currentThread().getName()+":"+tl.get());
+		},"绿色").start();
+	}
 
 }
