@@ -7,4 +7,8 @@ public interface UserService {
     boolean register(String username,String password);
 
     void update(User user);
+
+    void updateAvatar(String avatarUrl);
+
+    void updatePwd(String new_pwd);
 }

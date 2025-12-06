@@ -7,7 +7,9 @@ import com.zmj.utils.JwtUtil;
 import com.zmj.utils.Md5Util;
 import com.zmj.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -69,6 +71,45 @@ public class UserController {
     @PutMapping
     public Result update(@RequestBody @Validated User user){
         userService.update(user);
+        return Result.success();
+    }
+
+    @PatchMapping("/updateAvatar")
+    public Result updateAvatar(@RequestParam @URL String avatarUrl){
+        userService.updateAvatar(avatarUrl);
+        return Result.success();
+    }
+
+    @PatchMapping("/updatePwd")
+    public Result updatePwd(@RequestBody Map<String,String> params){
+        //1.校验参数
+        String old_pwd = params.get("old_pwd");
+        String new_pwd = params.get("new_pwd");
+        String re_pwd = params.get("re_pwd");
+
+        if(!StringUtils.hasLength(old_pwd)||!StringUtils.hasLength(new_pwd)||!StringUtils.hasLength(re_pwd)){
+            return Result.error("参数不能为空");
+        }
+
+        //校验原密码
+        Map<String,Object> claims = ThreadLocalUtil.get();
+        String username = (String) claims.get("username");
+        User user = userService.findByUsername(username);
+        if(!user.getPassword().equals(Md5Util.getMD5String(old_pwd))){
+            return Result.error("原密码错误");
+        }
+
+        //校验新密码是否符合规范以及新密码和确认密码是否一致
+        if(!new_pwd.equals(re_pwd)){
+            return Result.error("两次新密码不一致");
+        }
+
+        if(new_pwd.length()<5||new_pwd.length()>16){
+            return Result.error("密码长度要大于5且小于16");
+        }
+
+        //2.更新密码
+        userService.updatePwd(new_pwd);
         return Result.success();
     }
 }
