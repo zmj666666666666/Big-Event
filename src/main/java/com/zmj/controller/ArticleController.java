@@ -1,18 +1,28 @@
 package com.zmj.controller;
 
+import com.zmj.domain.Article;
 import com.zmj.domain.Result;
+import com.zmj.service.ArticleService;
 import com.zmj.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
+
+    @Autowired
+    private ArticleService articleService;
+
+    @PostMapping
+    public Result add(@RequestBody @Validated Article article){
+        articleService.add(article);
+        return Result.success();
+    }
     @GetMapping
     public Result<String> list(/*@RequestHeader(name = "Authorization") String token, HttpServletResponse response*/){
         //验证JWT(用拦截器实现，更简洁方便)
