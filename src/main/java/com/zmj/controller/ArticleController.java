@@ -7,8 +7,10 @@ import com.zmj.service.ArticleService;
 import com.zmj.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.GetExchange;
 
 import java.util.Map;
 
@@ -35,4 +37,23 @@ public class ArticleController {
         PageBean<Article> articles=articleService.list(pageNum,pageSize,categoryId,state);
         return Result.success(articles);
     }
+
+    @GetMapping("/{id}")
+    public Result<Article> getById(@PathVariable Integer id){
+        Article article=articleService.getById(id);
+        return Result.success(article);
+    }
+
+    @DeleteMapping("/{id}")
+    public Result deleteById(@PathVariable Integer id){
+        articleService.deleteById(id);
+        return Result.success();
+    }
+
+    @PutMapping
+    public Result update(@RequestBody @Validated Article article){
+        articleService.update(article);
+        return Result.success();
+    }
+
 }

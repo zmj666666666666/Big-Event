@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -45,5 +46,23 @@ public class ArticleServiceImpl implements ArticleService {
         artilces.setItems(articlePage.getResult());
         artilces.setTotal(articlePage.getTotal());
         return artilces;
+    }
+
+    @Override
+    public Article getById(Integer id) {
+        Article article=articleDao.getById(id);
+        return article;
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        articleDao.deleteById(id);
+    }
+
+    @Override
+    public void update(Article article) {
+        //更新修改时间
+        article.setUpdateTime(LocalDateTime.now());
+        articleDao.update(article);
     }
 }
