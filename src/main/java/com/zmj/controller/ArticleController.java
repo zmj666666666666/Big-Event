@@ -1,6 +1,7 @@
 package com.zmj.controller;
 
 import com.zmj.domain.Article;
+import com.zmj.domain.PageBean;
 import com.zmj.domain.Result;
 import com.zmj.service.ArticleService;
 import com.zmj.utils.JwtUtil;
@@ -23,16 +24,15 @@ public class ArticleController {
         articleService.add(article);
         return Result.success();
     }
+
     @GetMapping
-    public Result<String> list(/*@RequestHeader(name = "Authorization") String token, HttpServletResponse response*/){
-        //验证JWT(用拦截器实现，更简洁方便)
-//        try {
-//            Map<String, Object> claims = JwtUtil.parseToken(token);
-//        }catch (Exception e){
-//            //http响应状态码为401
-//            response.setStatus(401);
-//            return Result.error("未登录");
-//        }
-        return Result.success("文章列表");
+    public Result<PageBean<Article>> list(
+            Integer pageNum,
+            Integer pageSize,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) String state
+    ){
+        PageBean<Article> articles=articleService.list(pageNum,pageSize,categoryId,state);
+        return Result.success(articles);
     }
 }
