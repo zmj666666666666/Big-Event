@@ -5,6 +5,7 @@ import com.zmj.domain.User;
 import com.zmj.service.UserService;
 import com.zmj.utils.JwtUtil;
 import com.zmj.utils.Md5Util;
+import com.zmj.utils.RedisUtil;
 import com.zmj.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
@@ -22,6 +23,9 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$")String password){
@@ -48,6 +52,8 @@ public class UserController {
                 claims.put("id",user.getId());
                 claims.put("username",user.getUsername());
                 String token=JwtUtil.genToken(claims);
+                //把token存储到redis中
+                redisUtil.set(token,token,60*60);
                 return Result.success(token);
             }
             return Result.error("密码错误");
@@ -81,7 +87,7 @@ public class UserController {
     }
 
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String,String> params){
+    public Result updatePwd(@RequestBody Map<String,String> params,@RequestHeader("Authorization") String token){
         //1.校验参数
         String old_pwd = params.get("old_pwd");
         String new_pwd = params.get("new_pwd");
@@ -110,6 +116,8 @@ public class UserController {
 
         //2.更新密码
         userService.updatePwd(new_pwd);
+        //删除redis中的旧token
+        redisUtil.del(token);
         return Result.success();
     }
 }

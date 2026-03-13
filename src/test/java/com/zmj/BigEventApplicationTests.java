@@ -5,7 +5,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.zmj.utils.RedisUtil;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.swing.plaf.TableHeaderUI;
@@ -14,8 +16,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootTest
+@SpringBootTest//如果在测试类上添加了这个注解，那么将来单元测试方法执行之前，会先初始化Spring容器
 class BigEventApplicationTests {
+
+	@Autowired
+	private RedisUtil redisUtil;
 
 	@Test
 	public void testGen() {
@@ -61,6 +66,14 @@ class BigEventApplicationTests {
 			System.out.println(Thread.currentThread().getName()+":"+tl.get());
 			System.out.println(Thread.currentThread().getName()+":"+tl.get());
 		},"绿色").start();
+	}
+
+	@Test
+	public void testRedisUtli(){
+		redisUtil.set("myname","zmj");
+		redisUtil.set("myage",18,20);
+		System.out.println(redisUtil.getExpire("myage"));
+		System.out.println(redisUtil.get("myname"));
 	}
 
 }
